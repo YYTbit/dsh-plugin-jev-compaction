@@ -232,6 +232,8 @@ a repository re-read to recover gets kept for a fraction of a cent.
 
 ## Related projects
 
+- [metajev](https://github.com/YYTbit/metajev) -- the general form of the scoring this plugin does per message. Decisions are keyed by state, question, and model; thresholds live in a policy that reads the record, so a different keep/drop boundary costs no model calls.
+- [dsh-plugin-jev-router](https://github.com/YYTbit/dsh-plugin-jev-router) -- the other end of the same context problem. That plugin decides which model serves a turn; this one decides which messages survive to reach it.
 - [dsh-plugin-meta-memory](https://github.com/YYTbit/dsh-plugin-meta-memory) produces the brief and full memory pairs that this plugin then defends against compaction.
 - TypeSafe System One, the model behind the scoring endpoint, answered at `https://api.typesafe.ai/v1/systemone`.
 
