@@ -1,0 +1,11 @@
+- insert:
+    - id: jev-compaction
+      name: dsh-plugin-jev-compaction
+      inject: []
+      config:
+        targetBytes: 262144
+        keepRecent: 4
+        batchSize: 8
+        minConfidence: 0.35
+        summaryBytes: 1024
+        enablePinning: true

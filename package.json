@@ -1,0 +1,18 @@
+{
+  "name": "dsh-plugin-jev-compaction",
+  "version": "0.1.0",
+  "description": "Jev-scored context compaction for DeepSeek Harness -- keep the messages that matter, compact the ones that do not",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": { ".": { "import": "./lib/index.js", "types": "./lib/index.d.ts" } },
+  "bin": { "jev-compact": "lib/cli.js" },
+  "files": ["lib", "cordis.patch.yml", "README.md"],
+  "scripts": { "build": "tsc", "prepare": "tsc", "prepublishOnly": "tsc" },
+  "keywords": ["dsh-plugin", "deepseek-harness", "jev", "compaction", "context"],
+  "author": "YYTbit",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/YYTbit/dsh-plugin-jev-compaction" },
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } },
+  "devDependencies": { "@types/node": "^26.2.0", "typescript": "^5.7.0" }
+}
