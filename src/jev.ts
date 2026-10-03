@@ -66,6 +66,33 @@ function pickArray(payload: unknown): unknown[] | null {
   return null
 }
 
+/**
+ * Read a distribution into a weight vector in level order, or null.
+ *
+ * An array is taken in level order. An object is read by level name, which is
+ * how a choice or score question is normally echoed back. A vector that fits
+ * neither shape is rejected rather than guessed at, since reading the weights in
+ * the wrong order would silently invert a score while still looking plausible.
+ */
+function toWeightVector(raw: unknown, levels: string[]): number[] | null {
+  const sanitise = (value: unknown): number =>
+    typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : 0
+
+  if (Array.isArray(raw) && raw.length > 0) {
+    return raw.map(sanitise)
+  }
+  if (raw && typeof raw === 'object') {
+    const keyed = raw as Record<string, unknown>
+    const byLower = new Map(Object.keys(keyed).map(key => [key.toLowerCase(), key]))
+    const weights = levels.map(level => {
+      const key = level in keyed ? level : byLower.get(level.toLowerCase())
+      return key === undefined ? 0 : sanitise(keyed[key])
+    })
+    if (weights.some(weight => weight > 0)) return weights
+  }
+  return null
+}
+
 /** Reduce an unknown answer object to a value plus a confidence. */
 function reduceAnswer(answer: unknown, levels: string[], values: number[]): JevAnswer | null {
   if (typeof answer === 'number' && Number.isFinite(answer)) {
@@ -77,8 +104,8 @@ function reduceAnswer(answer: unknown, levels: string[], values: number[]): JevA
   // A distribution over ordered levels reduces to its expected rank. Weights
   // are renormalised so an unnormalised payload still yields a valid answer.
   const rawWeights = record.probabilities ?? record.probs ?? record.distribution ?? record.weights
-  if (Array.isArray(rawWeights) && rawWeights.length > 0) {
-    const weights = rawWeights.map(w => (typeof w === 'number' && Number.isFinite(w) && w > 0 ? w : 0))
+  const weights = toWeightVector(rawWeights, levels)
+  if (weights) {
     const total = weights.reduce((a, b) => a + b, 0)
     if (total <= 0) return null
     const ranks = values.length === weights.length ? values : spread(weights.length)
@@ -91,8 +118,9 @@ function reduceAnswer(answer: unknown, levels: string[], values: number[]): JevA
     return { value: clamp01(expected), confidence: clamp01(peak) }
   }
 
-  // A single chosen level, either as a label or as an index.
-  const level = record.level ?? record.label ?? record.choice
+  // A single chosen level, given as a label or as an index. `answer` belongs
+  // here because it is the field a label-shaped response puts the pick in.
+  const level = record.level ?? record.label ?? record.choice ?? record.answer
   const confidence = firstNumber(record.confidence, record.probability, record.prob, record.p)
   if (typeof level === 'string') {
     const index = labelIndex(level, record, levels)
