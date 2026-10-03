@@ -17,7 +17,7 @@ import { DEFAULT_ENDPOINT, DEFAULT_LEVELS, estimateCost } from './jev.js'
 import { compilePins, DEFAULT_PIN_PATTERNS, matchPin, type CompiledPin } from './pins.js'
 import { writeReceipt } from './receipt.js'
 import { scoreSegments } from './scorer.js'
-import { byteLength, clamp01, formatBytes, hashText, messageRole, messageText, oneLine, truncateBytes } from './text.js'
+import { byteLength, clamp01, expandHome, formatBytes, hashText, messageRole, messageText, oneLine, truncateBytes } from './text.js'
 import type {
   CompactOptions,
   CompactResult,
@@ -73,7 +73,7 @@ export function resolveOptions(options: CompactOptions = {}): ResolvedOptions {
     timeoutMs: Math.max(1, Math.floor(options.timeoutMs ?? 15000)),
     levels,
     pricePerMillionTokens: Math.max(0, options.pricePerMillionTokens ?? 0.1),
-    receiptPath: options.receiptPath ?? process.env.DSH_JEV_COMPACT_RECEIPT ?? '',
+    receiptPath: expandHome(options.receiptPath ?? process.env.DSH_JEV_COMPACT_RECEIPT ?? ''),
     task: options.task ?? DEFAULT_TASK,
     runId: options.runId ?? defaultRunId(),
     scoreCache: options.scoreCache,

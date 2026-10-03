@@ -43,15 +43,23 @@ Age is left where it belongs, as a tiebreaker.
 
 ## Install
 
-```sh
-dsh plugin --profile your-profile add dsh-plugin-jev-compaction
-```
-
-Or from npm:
+The package is not on npm yet, so npm installs it from the repository. That
+route runs the build for you, because npm executes the `prepare` script for a
+git dependency and makes the devDependencies available to it.
 
 ```sh
-npm install dsh-plugin-jev-compaction
+npm install github:YYTbit/dsh-plugin-jev-compaction
 ```
+
+Or from a checkout:
+
+```sh
+git clone https://github.com/YYTbit/dsh-plugin-jev-compaction
+cd dsh-plugin-jev-compaction
+npm install          # installs the toolchain and builds lib/
+```
+
+Register the plugin with your profile.
 
 The plugin needs `JEV_API_KEY` in the environment. Everything else has a
 working default.
@@ -224,8 +232,8 @@ Scoring is input-only. System One generates no output tokens, so the cost of a
 run is the size of the state blocks, at four bytes per token. The default
 `pricePerMillionTokens` of `0.1` is a placeholder for whatever the endpoint
 charges, and the estimate printed by the CLI and recorded in the stats uses it.
-A 24 message conversation compacted in the tests above scored in two requests
-and an estimated `$0.0003`.
+A 24 message conversation scored in two requests works out to an estimated
+`$0.0003` at that placeholder rate.
 
 The saving is not the point. The point is that a message which would have cost
 a repository re-read to recover gets kept for a fraction of a cent.

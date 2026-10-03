@@ -9,11 +9,24 @@
  */
 
 import { createHash } from 'node:crypto'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
 import type { Message } from './types.js'
 
 /** UTF-8 byte length of a string. */
 export function byteLength(text: string): number {
   return Buffer.byteLength(text, 'utf8')
+}
+
+/**
+ * Expand a leading `~` to the home directory.
+ * Configuration is written by hand, and a path written that way would
+ * otherwise be created as a directory literally named `~`.
+ */
+export function expandHome(path: string): string {
+  if (path === '~') return homedir()
+  if (path.startsWith('~/') || path.startsWith('~\\')) return join(homedir(), path.slice(2))
+  return path
 }
 
 /** First 16 hex characters of the SHA-256 of a string. */
