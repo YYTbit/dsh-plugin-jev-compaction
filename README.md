@@ -43,23 +43,15 @@ Age is left where it belongs, as a tiebreaker.
 
 ## Install
 
-The package is not on npm yet, so npm installs it from the repository. That
-route runs the build for you, because npm executes the `prepare` script for a
-git dependency and makes the devDependencies available to it.
-
 ```sh
-npm install github:YYTbit/dsh-plugin-jev-compaction
+dsh plugin --profile your-profile add dsh-plugin-jev-compaction
 ```
 
-Or from a checkout:
+Or from npm:
 
 ```sh
-git clone https://github.com/YYTbit/dsh-plugin-jev-compaction
-cd dsh-plugin-jev-compaction
-npm install          # installs the toolchain and builds lib/
+npm install dsh-plugin-jev-compaction
 ```
-
-Register the plugin with your profile.
 
 The plugin needs `JEV_API_KEY` in the environment. Everything else has a
 working default.
